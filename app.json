@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "takuro.inoue.frimane"
@@ -35,7 +37,10 @@
     },
     "updates": {
       "url": "https://u.expo.dev/ca47cda8-763b-4b86-9a28-f120ec98c7aa"
-    }
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker"
+    ]
   },
   "react-native-google-mobile-ads": {
     "ios_app_id": "ca-app-pub-1013230797140961~9512399959"
