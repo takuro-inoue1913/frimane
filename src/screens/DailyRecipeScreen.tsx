@@ -364,10 +364,6 @@ export const DailyRecipeScreen = () => {
         </CommonGradation>
       </TouchableOpacity>
       <Calendar
-        horizontal={false}
-        pagingEnabled={true}
-        pastScrollRange={12}
-        futureScrollRange={12}
         enableSwipeMonths={true}
         markedDates={{
           [dayjs().format('YYYY-MM-DD')]: {
