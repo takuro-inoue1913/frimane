@@ -18,6 +18,9 @@ module.exports = function (api) {
           root: ['./'],
           alias: {
             '@src': './src',
+            // recoil は React 19 非互換 (開発終了) のため、jotai バックエンドの
+            // 互換 shim へ解決させる。詳細は src/lib/recoilShim.tsx を参照。
+            '^recoil$': './src/lib/recoilShim',
           },
         },
       ],
