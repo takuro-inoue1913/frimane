@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { recipeRepository } from '@src/interface/repositories/recipeRepository';
@@ -8,9 +8,9 @@ import { recipesState } from '@src/states/recipe';
 import { fridgeMasterState } from '@src/states/fridge';
 
 export const useRequestGetAllRecipes = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const [recipes, setRecipes] = useRecoilState(recipesState);
-  const fridgeMaster = useRecoilValue(fridgeMasterState);
+  const idToken = useAtomValue(idTokenState);
+  const [recipes, setRecipes] = useAtom(recipesState);
+  const fridgeMaster = useAtomValue(fridgeMasterState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'all', 'recipes'],

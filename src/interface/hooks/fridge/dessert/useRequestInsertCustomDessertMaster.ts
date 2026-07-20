@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customDessertMasterRepository } from '@src/interface/repositories/customDessertMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomDessertMasterArgs = {
 };
 
 export const useRequestInsertCustomDessertMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomDessertMasterArgs) => {
     if (user?.uid === undefined) {

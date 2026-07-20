@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { StyleSheet, View } from 'react-native';
 
 import { VegetablesView } from '@src/components/FridgeScreen/CategoryViews/VegetablesView';
@@ -14,7 +14,7 @@ import { FishView } from '@src/components/FridgeScreen/CategoryViews/FishView';
 import { DessertView } from '@src/components/FridgeScreen/CategoryViews/DessertView';
 
 export const FridgeScreen = () => {
-  const selectFridgeCategory = useRecoilValue(selectFridgeCategoryState);
+  const selectFridgeCategory = useAtomValue(selectFridgeCategoryState);
 
   const SelectedCategoryView = () => {
     switch (selectFridgeCategory) {

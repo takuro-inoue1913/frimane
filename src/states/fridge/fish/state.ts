@@ -1,4 +1,4 @@
-import { atom, selector } from 'recoil';
+import { atom } from 'jotai';
 import { FridgeStock, NormalizedArray } from '@src/types';
 
 /**
@@ -7,26 +7,17 @@ import { FridgeStock, NormalizedArray } from '@src/types';
 export type FishStocks = NormalizedArray<FridgeStock>;
 
 export const fishStocksState = atom({
-  key: 'fishStocksState',
-  default: {
-    ids: [],
-    byId: {},
-  } as FishStocks,
-});
+  ids: [],
+  byId: {},
+} as FishStocks);
 
 /**
  * 在庫IDの配列。絞り込みのために使用する想定。
  * fishStocksState と同時に更新する。
  */
-export const fishStocksIdsState = atom({
-  key: 'fishStocksIdsState',
-  default: [] as string[],
-});
+export const fishStocksIdsState = atom([] as string[]);
 
-export const fishStockById = selector({
-  key: 'fishStockById',
-  get: ({ get }) => {
-    const fishStocks = get(fishStocksState);
-    return (fishId: string) => fishStocks.byId[fishId];
-  },
+export const fishStockById = atom((get) => {
+  const fishStocks = get(fishStocksState);
+  return (fishId: string) => fishStocks.byId[fishId];
 });

@@ -1,4 +1,4 @@
-import { atom, selector } from 'recoil';
+import { atom } from 'jotai';
 import { FridgeStock, NormalizedArray } from '@src/types';
 
 /**
@@ -7,26 +7,17 @@ import { FridgeStock, NormalizedArray } from '@src/types';
 export type SpiceStocks = NormalizedArray<FridgeStock>;
 
 export const spiceStocksState = atom({
-  key: 'spiceStocksState',
-  default: {
-    ids: [],
-    byId: {},
-  } as SpiceStocks,
-});
+  ids: [],
+  byId: {},
+} as SpiceStocks);
 
 /**
  * 在庫IDの配列。絞り込みのために使用する想定。
  * spiceStocksState と同時に更新する。
  */
-export const spiceStocksIdsState = atom({
-  key: 'spiceStocksIdsState',
-  default: [] as string[],
-});
+export const spiceStocksIdsState = atom([] as string[]);
 
-export const spiceStockById = selector({
-  key: 'spiceStockById',
-  get: ({ get }) => {
-    const spiceStocks = get(spiceStocksState);
-    return (spiceId: string) => spiceStocks.byId[spiceId];
-  },
+export const spiceStockById = atom((get) => {
+  const spiceStocks = get(spiceStocksState);
+  return (spiceId: string) => spiceStocks.byId[spiceId];
 });

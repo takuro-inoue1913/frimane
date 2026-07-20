@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { RootStackParamList } from '@src/types';
 import { RouteProp } from '@react-navigation/native';
 import { recipesState } from '@src/states/recipe';
@@ -14,9 +14,9 @@ type Props = {
 };
 
 export const RecipeDetailScreen: FC<Props> = ({ route }) => {
-  const recipes = useRecoilValue(recipesState);
+  const recipes = useAtomValue(recipesState);
   const recipe = recipes.byId[route.params.recipeId];
-  const fridgeMaster = useRecoilValue(fridgeMasterState);
+  const fridgeMaster = useAtomValue(fridgeMasterState);
 
   const materials = recipe.materials.map((material) => {
     const fridgeItem = fridgeMaster.find((f) => f.id === material.masterId);

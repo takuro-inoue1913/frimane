@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { generateSeasoningStocks } from '@src/interface/logics/generate/generateSeasoningStocks';
@@ -12,11 +12,10 @@ import { filterSeasoningStock } from '@src/states/fridge/seasoning/logics/filter
 import { selectFilterOptionsState } from '@src/states/fridge';
 
 export const useRequestGetSeasoningStocks = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const [seasoningStocks, setSeasoningStocks] =
-    useRecoilState(seasoningStocksState);
-  const setSeasoningStocksIds = useSetRecoilState(seasoningStocksIdsState);
-  const selectFilterOptions = useRecoilValue(selectFilterOptionsState);
+  const idToken = useAtomValue(idTokenState);
+  const [seasoningStocks, setSeasoningStocks] = useAtom(seasoningStocksState);
+  const setSeasoningStocksIds = useSetAtom(seasoningStocksIdsState);
+  const selectFilterOptions = useAtomValue(selectFilterOptionsState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'seasoning', 'master', 'stock'],

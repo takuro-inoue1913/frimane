@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { recipeRepository } from '@src/interface/repositories/recipeRepository';
@@ -10,8 +10,8 @@ type DeleteRecipeArgs = {
 };
 
 export const useRequestDeleteRecipe = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: DeleteRecipeArgs) => {
     if (!user) {

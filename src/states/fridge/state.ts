@@ -1,6 +1,6 @@
 import { GetAllFridgeMasterQuery } from '@src/interface/__generated__/graphql';
 import { FILTER_OPTIONS } from '@src/utils/consts';
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
 export type SelectFridgeCategory =
   | '野菜類'
@@ -62,25 +62,13 @@ export type UnitMater = {
   name: string;
 };
 
-export const selectFridgeCategoryState = atom<SelectFridgeCategory>({
-  key: 'selectedCategoryState',
-  default: '野菜類',
-});
+export const selectFridgeCategoryState = atom<SelectFridgeCategory>('野菜類');
 
 export const selectFilterOptionsState = atom<SelectFilterOptions>({
-  key: 'selectFilterOptionsState',
-  default: {
-    sort: '通常',
-    searchFridgeName: '',
-  },
+  sort: '通常',
+  searchFridgeName: '',
 });
 
-export const fridgeMasterState = atom<FridgeMaster[]>({
-  key: 'fridgeMasterState',
-  default: [],
-});
+export const fridgeMasterState = atom<FridgeMaster[]>([]);
 
-export const unitMasterState = atom<UnitMater[]>({
-  key: 'unitMasterState',
-  default: [],
-});
+export const unitMasterState = atom<UnitMater[]>([]);

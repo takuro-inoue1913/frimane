@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 // import { useRef, useEffect } from 'react';
 import { TypeName } from '@src/states/fridge';
@@ -20,8 +20,8 @@ type DecreaseFridgeStockArgs = {
 };
 
 export const useRequestUpdateFridgeStock = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
   const requestUpsertVegetableStock = useRequestUpsertVegetableStock();
   const requestUpsertStapleFoodStock = useRequestUpsertStapleFoodStock();
   const requestUpsertSpiceStock = useRequestUpsertSpiceStock();

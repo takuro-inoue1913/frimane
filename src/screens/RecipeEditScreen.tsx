@@ -22,7 +22,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { uploadUserImage } from '@src/interface/firebase/uploadUserImage';
 import { deleteUserImage } from '@src/interface/firebase/deleteUserImage';
 import { userState } from '@src/states/user';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { useTypedNavigation } from '@src/hooks/useTypedNavigation';
 import Toast from 'react-native-toast-message';
 import { useRecipesActions } from '@src/states/recipe/actions';
@@ -59,12 +59,12 @@ type Props = {
 };
 
 export const RecipeEditScreen: FC<Props> = ({ route }) => {
-  const fridgeMaster = useRecoilValue(fridgeMasterState);
-  const recipes = useRecoilValue(recipesState);
+  const fridgeMaster = useAtomValue(fridgeMasterState);
+  const recipes = useAtomValue(recipesState);
   const requestUpdateRecipe = useRequestUpdateRecipe();
   const { updateRecipe } = useRecipesActions();
   const navigation = useTypedNavigation();
-  const user = useRecoilValue(userState);
+  const user = useAtomValue(userState);
   const { recipeId } = route.params;
   const targetRecipe = recipes.byId[recipeId];
 

@@ -1,4 +1,5 @@
-import { useRecoilCallback } from 'recoil';
+import { useCallback } from 'react';
+import { useStore } from 'jotai';
 import {
   ProteinSourceStocks,
   proteinSourceStocksIdsState,
@@ -60,156 +61,20 @@ type ProteinSourceStockActions = {
 };
 
 export const useProteinSourceStockActions = () => {
+  const store = useStore();
   const increaseProteinSourceStock: ProteinSourceStockActions['increaseProteinSourceStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: proteinSourceId, quantity }) => {
-          set(proteinSourceStocksState, (prev) => {
-            const newStocks: ProteinSourceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === proteinSourceId) {
-                    acc[cur].quantity += quantity;
-                    acc[cur].hasStock = true;
-                  }
-                  return acc;
-                },
-                {} as ProteinSourceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const decreaseProteinSourceStock: ProteinSourceStockActions['decreaseProteinSourceStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: proteinSourceId, quantity }) => {
-          set(proteinSourceStocksState, (prev) => {
-            const updatedQuantity =
-              prev.byId[proteinSourceId].quantity - quantity;
-
-            const newStocks: ProteinSourceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === proteinSourceId) {
-                    acc[cur].quantity = Math.max(updatedQuantity, 0);
-                    acc[cur].hasStock = updatedQuantity > 0;
-                  }
-                  return acc;
-                },
-                {} as ProteinSourceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const updateProteinSourceStockDetail: ProteinSourceStockActions['updateProteinSourceStockDetail'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({
-          id: proteinSourceId,
-          quantity,
-          incrementalUnit,
-          expirationDate,
-          memo,
-          isFavorite,
-        }) => {
-          set(proteinSourceStocksState, (prev) => {
-            const newStocks: ProteinSourceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === proteinSourceId) {
-                    acc[cur].quantity = quantity;
-                    acc[cur].incrementalUnit = incrementalUnit;
-                    acc[cur].expirationDate = expirationDate;
-                    acc[cur].memo = memo;
-                    acc[cur].hasStock = quantity > 0;
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as ProteinSourceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const filterProteinSourceStocks: ProteinSourceStockActions['filterVegetableStocks'] =
-    useRecoilCallback(
-      ({ snapshot, set }) =>
-        async () => {
-          const selectFilterOptions = await snapshot.getPromise(
-            selectFilterOptionsState,
-          );
-          const proteinSourceStocksIds = await snapshot.getPromise(
-            proteinSourceStocksIdsState,
-          );
-          set(proteinSourceStocksState, (prev) => {
-            const sortedIds = filterProteinSourceStock({
-              proteinSourceStocks: prev,
-              originalIds: proteinSourceStocksIds,
-              selectFilterOptions,
-            });
-            return {
-              ids: sortedIds,
-              byId: prev.byId,
-            };
-          });
-        },
-      [],
-    );
-
-  const updateIsFavorite: ProteinSourceStockActions['updateIsFavorite'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: proteinSourceId, isFavorite }) => {
-          set(proteinSourceStocksState, (prev) => {
-            const newStocks: ProteinSourceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === proteinSourceId) {
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as ProteinSourceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const deleteProteinSourceStock = useRecoilCallback(
-    ({ set }) =>
-      (proteinSourceId: string) => {
-        set(proteinSourceStocksState, (prev) => {
+    useCallback(
+      ({ id: proteinSourceId, quantity }) => {
+        store.set(proteinSourceStocksState, (prev) => {
           const newStocks: ProteinSourceStocks = {
-            ids: prev.ids.filter((id) => id !== proteinSourceId),
+            ids: [...prev.ids],
             byId: prev.ids.reduce(
               (acc, cur) => {
-                if (cur === proteinSourceId) {
-                  return acc;
-                }
                 acc[cur] = { ...prev.byId[cur] };
+                if (cur === proteinSourceId) {
+                  acc[cur].quantity += quantity;
+                  acc[cur].hasStock = true;
+                }
                 return acc;
               },
               {} as ProteinSourceStocks['byId'],
@@ -218,7 +83,133 @@ export const useProteinSourceStockActions = () => {
           return newStocks;
         });
       },
-    [],
+      [store],
+    );
+
+  const decreaseProteinSourceStock: ProteinSourceStockActions['decreaseProteinSourceStock'] =
+    useCallback(
+      ({ id: proteinSourceId, quantity }) => {
+        store.set(proteinSourceStocksState, (prev) => {
+          const updatedQuantity =
+            prev.byId[proteinSourceId].quantity - quantity;
+
+          const newStocks: ProteinSourceStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === proteinSourceId) {
+                  acc[cur].quantity = Math.max(updatedQuantity, 0);
+                  acc[cur].hasStock = updatedQuantity > 0;
+                }
+                return acc;
+              },
+              {} as ProteinSourceStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const updateProteinSourceStockDetail: ProteinSourceStockActions['updateProteinSourceStockDetail'] =
+    useCallback(
+      ({
+        id: proteinSourceId,
+        quantity,
+        incrementalUnit,
+        expirationDate,
+        memo,
+        isFavorite,
+      }) => {
+        store.set(proteinSourceStocksState, (prev) => {
+          const newStocks: ProteinSourceStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === proteinSourceId) {
+                  acc[cur].quantity = quantity;
+                  acc[cur].incrementalUnit = incrementalUnit;
+                  acc[cur].expirationDate = expirationDate;
+                  acc[cur].memo = memo;
+                  acc[cur].hasStock = quantity > 0;
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as ProteinSourceStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const filterProteinSourceStocks: ProteinSourceStockActions['filterVegetableStocks'] =
+    useCallback(async () => {
+      const selectFilterOptions = await store.get(selectFilterOptionsState);
+      const proteinSourceStocksIds = await store.get(
+        proteinSourceStocksIdsState,
+      );
+      store.set(proteinSourceStocksState, (prev) => {
+        const sortedIds = filterProteinSourceStock({
+          proteinSourceStocks: prev,
+          originalIds: proteinSourceStocksIds,
+          selectFilterOptions,
+        });
+        return {
+          ids: sortedIds,
+          byId: prev.byId,
+        };
+      });
+    }, [store]);
+
+  const updateIsFavorite: ProteinSourceStockActions['updateIsFavorite'] =
+    useCallback(
+      ({ id: proteinSourceId, isFavorite }) => {
+        store.set(proteinSourceStocksState, (prev) => {
+          const newStocks: ProteinSourceStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === proteinSourceId) {
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as ProteinSourceStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const deleteProteinSourceStock = useCallback(
+    (proteinSourceId: string) => {
+      store.set(proteinSourceStocksState, (prev) => {
+        const newStocks: ProteinSourceStocks = {
+          ids: prev.ids.filter((id) => id !== proteinSourceId),
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              if (cur === proteinSourceId) {
+                return acc;
+              }
+              acc[cur] = { ...prev.byId[cur] };
+              return acc;
+            },
+            {} as ProteinSourceStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
   );
   return {
     increaseProteinSourceStock,

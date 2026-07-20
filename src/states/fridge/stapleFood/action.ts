@@ -1,4 +1,5 @@
-import { useRecoilCallback } from 'recoil';
+import { useCallback } from 'react';
+import { useStore } from 'jotai';
 import {
   StapleFoodStocks,
   stapleFoodStocksIdsState,
@@ -60,155 +61,20 @@ type StapleFoodStockActions = {
 };
 
 export const useStapleFoodStockActions = () => {
+  const store = useStore();
   const increaseStapleFoodStock: StapleFoodStockActions['increaseStapleFoodStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: stapleFoodId, quantity }) => {
-          set(stapleFoodStocksState, (prev) => {
-            const newStocks: StapleFoodStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === stapleFoodId) {
-                    acc[cur].quantity += quantity;
-                    acc[cur].hasStock = true;
-                  }
-                  return acc;
-                },
-                {} as StapleFoodStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const decreaseStapleFoodStock: StapleFoodStockActions['decreaseStapleFoodStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: stapleFoodId, quantity }) => {
-          set(stapleFoodStocksState, (prev) => {
-            const updatedQuantity = prev.byId[stapleFoodId].quantity - quantity;
-
-            const newStocks: StapleFoodStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === stapleFoodId) {
-                    acc[cur].quantity = Math.max(updatedQuantity, 0);
-                    acc[cur].hasStock = updatedQuantity > 0;
-                  }
-                  return acc;
-                },
-                {} as StapleFoodStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const updateStapleFoodStockDetail: StapleFoodStockActions['updateStapleFoodStockDetail'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({
-          id: stapleFoodId,
-          quantity,
-          incrementalUnit,
-          expirationDate,
-          memo,
-          isFavorite,
-        }) => {
-          set(stapleFoodStocksState, (prev) => {
-            const newStocks: StapleFoodStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === stapleFoodId) {
-                    acc[cur].quantity = quantity;
-                    acc[cur].incrementalUnit = incrementalUnit;
-                    acc[cur].expirationDate = expirationDate;
-                    acc[cur].memo = memo;
-                    acc[cur].hasStock = quantity > 0;
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as StapleFoodStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const filterStapleFoodStocks: StapleFoodStockActions['filterVegetableStocks'] =
-    useRecoilCallback(
-      ({ snapshot, set }) =>
-        async () => {
-          const selectFilterOptions = await snapshot.getPromise(
-            selectFilterOptionsState,
-          );
-          const stapleFoodStocksIds = await snapshot.getPromise(
-            stapleFoodStocksIdsState,
-          );
-          set(stapleFoodStocksState, (prev) => {
-            const sortedIds = filterStapleFoodStock({
-              stapleFoodStocks: prev,
-              originalIds: stapleFoodStocksIds,
-              selectFilterOptions,
-            });
-            return {
-              ids: sortedIds,
-              byId: prev.byId,
-            };
-          });
-        },
-      [],
-    );
-
-  const updateIsFavorite: StapleFoodStockActions['updateIsFavorite'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: stapleFoodId, isFavorite }) => {
-          set(stapleFoodStocksState, (prev) => {
-            const newStocks: StapleFoodStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === stapleFoodId) {
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as StapleFoodStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const deleteStapleFoodStock = useRecoilCallback(
-    ({ set }) =>
-      (stapleFoodId: string) => {
-        set(stapleFoodStocksState, (prev) => {
+    useCallback(
+      ({ id: stapleFoodId, quantity }) => {
+        store.set(stapleFoodStocksState, (prev) => {
           const newStocks: StapleFoodStocks = {
-            ids: prev.ids.filter((id) => id !== stapleFoodId),
+            ids: [...prev.ids],
             byId: prev.ids.reduce(
               (acc, cur) => {
-                if (cur === stapleFoodId) {
-                  return acc;
-                }
                 acc[cur] = { ...prev.byId[cur] };
+                if (cur === stapleFoodId) {
+                  acc[cur].quantity += quantity;
+                  acc[cur].hasStock = true;
+                }
                 return acc;
               },
               {} as StapleFoodStocks['byId'],
@@ -217,7 +83,130 @@ export const useStapleFoodStockActions = () => {
           return newStocks;
         });
       },
-    [],
+      [store],
+    );
+
+  const decreaseStapleFoodStock: StapleFoodStockActions['decreaseStapleFoodStock'] =
+    useCallback(
+      ({ id: stapleFoodId, quantity }) => {
+        store.set(stapleFoodStocksState, (prev) => {
+          const updatedQuantity = prev.byId[stapleFoodId].quantity - quantity;
+
+          const newStocks: StapleFoodStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === stapleFoodId) {
+                  acc[cur].quantity = Math.max(updatedQuantity, 0);
+                  acc[cur].hasStock = updatedQuantity > 0;
+                }
+                return acc;
+              },
+              {} as StapleFoodStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const updateStapleFoodStockDetail: StapleFoodStockActions['updateStapleFoodStockDetail'] =
+    useCallback(
+      ({
+        id: stapleFoodId,
+        quantity,
+        incrementalUnit,
+        expirationDate,
+        memo,
+        isFavorite,
+      }) => {
+        store.set(stapleFoodStocksState, (prev) => {
+          const newStocks: StapleFoodStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === stapleFoodId) {
+                  acc[cur].quantity = quantity;
+                  acc[cur].incrementalUnit = incrementalUnit;
+                  acc[cur].expirationDate = expirationDate;
+                  acc[cur].memo = memo;
+                  acc[cur].hasStock = quantity > 0;
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as StapleFoodStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const filterStapleFoodStocks: StapleFoodStockActions['filterVegetableStocks'] =
+    useCallback(async () => {
+      const selectFilterOptions = await store.get(selectFilterOptionsState);
+      const stapleFoodStocksIds = await store.get(stapleFoodStocksIdsState);
+      store.set(stapleFoodStocksState, (prev) => {
+        const sortedIds = filterStapleFoodStock({
+          stapleFoodStocks: prev,
+          originalIds: stapleFoodStocksIds,
+          selectFilterOptions,
+        });
+        return {
+          ids: sortedIds,
+          byId: prev.byId,
+        };
+      });
+    }, [store]);
+
+  const updateIsFavorite: StapleFoodStockActions['updateIsFavorite'] =
+    useCallback(
+      ({ id: stapleFoodId, isFavorite }) => {
+        store.set(stapleFoodStocksState, (prev) => {
+          const newStocks: StapleFoodStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === stapleFoodId) {
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as StapleFoodStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const deleteStapleFoodStock = useCallback(
+    (stapleFoodId: string) => {
+      store.set(stapleFoodStocksState, (prev) => {
+        const newStocks: StapleFoodStocks = {
+          ids: prev.ids.filter((id) => id !== stapleFoodId),
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              if (cur === stapleFoodId) {
+                return acc;
+              }
+              acc[cur] = { ...prev.byId[cur] };
+              return acc;
+            },
+            {} as StapleFoodStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
   );
 
   return {

@@ -1,12 +1,6 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 import { UserInfo } from 'firebase/auth';
 
-export const userState = atom<UserInfo | null>({
-  key: 'authUser',
-  default: null,
-});
+export const userState = atom<UserInfo | null>(null);
 
-export const idTokenState = atom<string | null>({
-  key: 'idToken',
-  default: null,
-});
+export const idTokenState = atom<string | null>(null);

@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customVegetableMasterRepository } from '@src/interface/repositories/customVegetableMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomVegetableMasterArgs = {
 };
 
 export const useRequestInsertCustomVegetableMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomVegetableMasterArgs) => {
     if (user?.uid === undefined) {

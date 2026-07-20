@@ -1,11 +1,11 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { customStapleFoodMasterRepository } from '@src/interface/repositories/customStapleFoodMasterRepository';
 import Toast from 'react-native-toast-message';
 
 export const useRequestDeleteCustomStapleFoodMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
+  const idToken = useAtomValue(idTokenState);
 
   return async (stapleFoodId: string) => {
     try {

@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import Toast from 'react-native-toast-message';
@@ -20,9 +20,9 @@ type AddFridgeMasterStockArgs = {
 };
 
 export const useRequestAddFridgeMasterStock = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
-  const fridgeMaster = useRecoilValue(fridgeMasterState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
+  const fridgeMaster = useAtomValue(fridgeMasterState);
 
   const reject = (error: unknown) => {
     Toast.show({

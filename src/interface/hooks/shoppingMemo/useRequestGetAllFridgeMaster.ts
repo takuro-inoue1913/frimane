@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { allFridgeMasterRepository } from '@src/interface/repositories/allFridgeMasterRepository';
@@ -7,9 +7,8 @@ import { generateFridgeMaster } from '../../logics/generate/generateFridgeMaster
 import { fridgeMasterState } from '@src/states/fridge';
 
 export const useRequestGetAllFridgeMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const [fridgeMaster, setFridgeMasterState] =
-    useRecoilState(fridgeMasterState);
+  const idToken = useAtomValue(idTokenState);
+  const [fridgeMaster, setFridgeMasterState] = useAtom(fridgeMasterState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'all', 'fridge', 'master'],

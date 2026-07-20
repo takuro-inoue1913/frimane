@@ -1,11 +1,11 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { customFishMasterRepository } from '@src/interface/repositories/customFishMasterRepository';
 import Toast from 'react-native-toast-message';
 
 export const useRequestDeleteCustomFishMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
+  const idToken = useAtomValue(idTokenState);
 
   return async (fishId: string) => {
     try {

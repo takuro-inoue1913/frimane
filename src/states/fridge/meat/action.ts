@@ -1,4 +1,5 @@
-import { useRecoilCallback } from 'recoil';
+import { useCallback } from 'react';
+import { useStore } from 'jotai';
 import {
   MeatStocks,
   meatStocksIdsState,
@@ -60,153 +61,79 @@ type MeatStockActions = {
 };
 
 export const useMeatStockActions = () => {
-  const increaseMeatStock: MeatStockActions['increaseMeatStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: meatId, quantity }) => {
-          set(meatStocksState, (prev) => {
-            const newStocks: MeatStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === meatId) {
-                    acc[cur].quantity += quantity;
-                    acc[cur].hasStock = true;
-                  }
-                  return acc;
-                },
-                {} as MeatStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
+  const store = useStore();
+  const increaseMeatStock: MeatStockActions['increaseMeatStock'] = useCallback(
+    ({ id: meatId, quantity }) => {
+      store.set(meatStocksState, (prev) => {
+        const newStocks: MeatStocks = {
+          ids: [...prev.ids],
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              acc[cur] = { ...prev.byId[cur] };
+              if (cur === meatId) {
+                acc[cur].quantity += quantity;
+                acc[cur].hasStock = true;
+              }
+              return acc;
+            },
+            {} as MeatStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
+  );
 
-  const decreaseMeatStock: MeatStockActions['decreaseMeatStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: meatId, quantity }) => {
-          set(meatStocksState, (prev) => {
-            const updatedQuantity = prev.byId[meatId].quantity - quantity;
+  const decreaseMeatStock: MeatStockActions['decreaseMeatStock'] = useCallback(
+    ({ id: meatId, quantity }) => {
+      store.set(meatStocksState, (prev) => {
+        const updatedQuantity = prev.byId[meatId].quantity - quantity;
 
-            const newStocks: MeatStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === meatId) {
-                    acc[cur].quantity = Math.max(updatedQuantity, 0);
-                    acc[cur].hasStock = updatedQuantity > 0;
-                  }
-                  return acc;
-                },
-                {} as MeatStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
+        const newStocks: MeatStocks = {
+          ids: [...prev.ids],
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              acc[cur] = { ...prev.byId[cur] };
+              if (cur === meatId) {
+                acc[cur].quantity = Math.max(updatedQuantity, 0);
+                acc[cur].hasStock = updatedQuantity > 0;
+              }
+              return acc;
+            },
+            {} as MeatStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
+  );
 
   const updateMeatStockDetail: MeatStockActions['updateMeatStockDetail'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({
-          id: meatId,
-          quantity,
-          incrementalUnit,
-          expirationDate,
-          memo,
-          isFavorite,
-        }) => {
-          set(meatStocksState, (prev) => {
-            const newStocks: MeatStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === meatId) {
-                    acc[cur].quantity = quantity;
-                    acc[cur].incrementalUnit = incrementalUnit;
-                    acc[cur].expirationDate = expirationDate;
-                    acc[cur].memo = memo;
-                    acc[cur].hasStock = quantity > 0;
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as MeatStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const filterMeatStocks: MeatStockActions['filterVegetableStocks'] =
-    useRecoilCallback(
-      ({ snapshot, set }) =>
-        async () => {
-          const selectFilterOptions = await snapshot.getPromise(
-            selectFilterOptionsState,
-          );
-          const meatStocksIds = await snapshot.getPromise(meatStocksIdsState);
-          set(meatStocksState, (prev) => {
-            const sortedIds = filterMeatStock({
-              meatStocks: prev,
-              originalIds: meatStocksIds,
-              selectFilterOptions,
-            });
-            return {
-              ids: sortedIds,
-              byId: prev.byId,
-            };
-          });
-        },
-      [],
-    );
-
-  const updateIsFavorite: MeatStockActions['updateIsFavorite'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: meatId, isFavorite }) => {
-          set(meatStocksState, (prev) => {
-            const newStocks: MeatStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === meatId) {
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as MeatStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const deleteMeatStock = useRecoilCallback(
-    ({ set }) =>
-      (meatId: string) => {
-        set(meatStocksState, (prev) => {
+    useCallback(
+      ({
+        id: meatId,
+        quantity,
+        incrementalUnit,
+        expirationDate,
+        memo,
+        isFavorite,
+      }) => {
+        store.set(meatStocksState, (prev) => {
           const newStocks: MeatStocks = {
-            ids: prev.ids.filter((id) => id !== meatId),
+            ids: [...prev.ids],
             byId: prev.ids.reduce(
               (acc, cur) => {
-                if (cur === meatId) {
-                  return acc;
-                }
                 acc[cur] = { ...prev.byId[cur] };
+                if (cur === meatId) {
+                  acc[cur].quantity = quantity;
+                  acc[cur].incrementalUnit = incrementalUnit;
+                  acc[cur].expirationDate = expirationDate;
+                  acc[cur].memo = memo;
+                  acc[cur].hasStock = quantity > 0;
+                  acc[cur].isFavorite = isFavorite;
+                }
                 return acc;
               },
               {} as MeatStocks['byId'],
@@ -215,7 +142,68 @@ export const useMeatStockActions = () => {
           return newStocks;
         });
       },
-    [],
+      [store],
+    );
+
+  const filterMeatStocks: MeatStockActions['filterVegetableStocks'] =
+    useCallback(async () => {
+      const selectFilterOptions = await store.get(selectFilterOptionsState);
+      const meatStocksIds = await store.get(meatStocksIdsState);
+      store.set(meatStocksState, (prev) => {
+        const sortedIds = filterMeatStock({
+          meatStocks: prev,
+          originalIds: meatStocksIds,
+          selectFilterOptions,
+        });
+        return {
+          ids: sortedIds,
+          byId: prev.byId,
+        };
+      });
+    }, [store]);
+
+  const updateIsFavorite: MeatStockActions['updateIsFavorite'] = useCallback(
+    ({ id: meatId, isFavorite }) => {
+      store.set(meatStocksState, (prev) => {
+        const newStocks: MeatStocks = {
+          ids: [...prev.ids],
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              acc[cur] = { ...prev.byId[cur] };
+              if (cur === meatId) {
+                acc[cur].isFavorite = isFavorite;
+              }
+              return acc;
+            },
+            {} as MeatStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
+  );
+
+  const deleteMeatStock = useCallback(
+    (meatId: string) => {
+      store.set(meatStocksState, (prev) => {
+        const newStocks: MeatStocks = {
+          ids: prev.ids.filter((id) => id !== meatId),
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              if (cur === meatId) {
+                return acc;
+              }
+              acc[cur] = { ...prev.byId[cur] };
+              return acc;
+            },
+            {} as MeatStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
   );
   return {
     increaseMeatStock,

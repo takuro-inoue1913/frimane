@@ -1,5 +1,5 @@
 import React, { FC, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import {
   SelectFridgeCategory,
   selectFridgeCategoryState,
@@ -37,7 +37,7 @@ export const StickyHeader: FC<Props> = ({
   onPressReload,
   onFilterPress,
 }) => {
-  const [selectFridgeCategory, setSelectFridgeCategory] = useRecoilState(
+  const [selectFridgeCategory, setSelectFridgeCategory] = useAtom(
     selectFridgeCategoryState,
   );
   const [isDropdownVisible, setDropdownVisible] = useState(false);

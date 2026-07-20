@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customMeatMasterRepository } from '@src/interface/repositories/customMeatMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomMeatMasterArgs = {
 };
 
 export const useRequestInsertCustomMeatMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomMeatMasterArgs) => {
     if (user?.uid === undefined) {

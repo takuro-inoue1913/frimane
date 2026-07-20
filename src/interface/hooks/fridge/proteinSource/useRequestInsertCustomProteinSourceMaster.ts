@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customProteinSourceMasterRepository } from '@src/interface/repositories/customProteinSourceMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomProteinSourceMasterArgs = {
 };
 
 export const useRequestInsertCustomProteinSourceMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomProteinSourceMasterArgs) => {
     if (user?.uid === undefined) {

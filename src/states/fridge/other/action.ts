@@ -1,4 +1,5 @@
-import { useRecoilCallback } from 'recoil';
+import { useCallback } from 'react';
+import { useStore } from 'jotai';
 import {
   OtherStocks,
   otherStocksIdsState,
@@ -60,153 +61,20 @@ type OtherStockActions = {
 };
 
 export const useOtherStockActions = () => {
+  const store = useStore();
   const increaseOtherStock: OtherStockActions['increaseOtherStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: otherId, quantity }) => {
-          set(otherStocksState, (prev) => {
-            const newStocks: OtherStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === otherId) {
-                    acc[cur].quantity += quantity;
-                    acc[cur].hasStock = true;
-                  }
-                  return acc;
-                },
-                {} as OtherStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const decreaseOtherStock: OtherStockActions['decreaseOtherStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: otherId, quantity }) => {
-          set(otherStocksState, (prev) => {
-            const updatedQuantity = prev.byId[otherId].quantity - quantity;
-
-            const newStocks: OtherStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === otherId) {
-                    acc[cur].quantity = Math.max(updatedQuantity, 0);
-                    acc[cur].hasStock = updatedQuantity > 0;
-                  }
-                  return acc;
-                },
-                {} as OtherStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const updateOtherStockDetail: OtherStockActions['updateOtherStockDetail'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({
-          id: otherId,
-          quantity,
-          incrementalUnit,
-          expirationDate,
-          memo,
-          isFavorite,
-        }) => {
-          set(otherStocksState, (prev) => {
-            const newStocks: OtherStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === otherId) {
-                    acc[cur].quantity = quantity;
-                    acc[cur].incrementalUnit = incrementalUnit;
-                    acc[cur].expirationDate = expirationDate;
-                    acc[cur].memo = memo;
-                    acc[cur].hasStock = quantity > 0;
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as OtherStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const filterOtherStocks: OtherStockActions['filterVegetableStocks'] =
-    useRecoilCallback(
-      ({ snapshot, set }) =>
-        async () => {
-          const selectFilterOptions = await snapshot.getPromise(
-            selectFilterOptionsState,
-          );
-          const otherStocksIds = await snapshot.getPromise(otherStocksIdsState);
-          set(otherStocksState, (prev) => {
-            const sortedIds = filterOtherStock({
-              otherStocks: prev,
-              originalIds: otherStocksIds,
-              selectFilterOptions,
-            });
-            return {
-              ids: sortedIds,
-              byId: prev.byId,
-            };
-          });
-        },
-      [],
-    );
-
-  const updateIsFavorite: OtherStockActions['updateIsFavorite'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: otherId, isFavorite }) => {
-          set(otherStocksState, (prev) => {
-            const newStocks: OtherStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === otherId) {
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as OtherStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const deleteOtherStock = useRecoilCallback(
-    ({ set }) =>
-      (otherId: string) => {
-        set(otherStocksState, (prev) => {
+    useCallback(
+      ({ id: otherId, quantity }) => {
+        store.set(otherStocksState, (prev) => {
           const newStocks: OtherStocks = {
-            ids: prev.ids.filter((id) => id !== otherId),
+            ids: [...prev.ids],
             byId: prev.ids.reduce(
               (acc, cur) => {
-                if (cur === otherId) {
-                  return acc;
-                }
                 acc[cur] = { ...prev.byId[cur] };
+                if (cur === otherId) {
+                  acc[cur].quantity += quantity;
+                  acc[cur].hasStock = true;
+                }
                 return acc;
               },
               {} as OtherStocks['byId'],
@@ -215,7 +83,129 @@ export const useOtherStockActions = () => {
           return newStocks;
         });
       },
-    [],
+      [store],
+    );
+
+  const decreaseOtherStock: OtherStockActions['decreaseOtherStock'] =
+    useCallback(
+      ({ id: otherId, quantity }) => {
+        store.set(otherStocksState, (prev) => {
+          const updatedQuantity = prev.byId[otherId].quantity - quantity;
+
+          const newStocks: OtherStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === otherId) {
+                  acc[cur].quantity = Math.max(updatedQuantity, 0);
+                  acc[cur].hasStock = updatedQuantity > 0;
+                }
+                return acc;
+              },
+              {} as OtherStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const updateOtherStockDetail: OtherStockActions['updateOtherStockDetail'] =
+    useCallback(
+      ({
+        id: otherId,
+        quantity,
+        incrementalUnit,
+        expirationDate,
+        memo,
+        isFavorite,
+      }) => {
+        store.set(otherStocksState, (prev) => {
+          const newStocks: OtherStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === otherId) {
+                  acc[cur].quantity = quantity;
+                  acc[cur].incrementalUnit = incrementalUnit;
+                  acc[cur].expirationDate = expirationDate;
+                  acc[cur].memo = memo;
+                  acc[cur].hasStock = quantity > 0;
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as OtherStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const filterOtherStocks: OtherStockActions['filterVegetableStocks'] =
+    useCallback(async () => {
+      const selectFilterOptions = await store.get(selectFilterOptionsState);
+      const otherStocksIds = await store.get(otherStocksIdsState);
+      store.set(otherStocksState, (prev) => {
+        const sortedIds = filterOtherStock({
+          otherStocks: prev,
+          originalIds: otherStocksIds,
+          selectFilterOptions,
+        });
+        return {
+          ids: sortedIds,
+          byId: prev.byId,
+        };
+      });
+    }, [store]);
+
+  const updateIsFavorite: OtherStockActions['updateIsFavorite'] = useCallback(
+    ({ id: otherId, isFavorite }) => {
+      store.set(otherStocksState, (prev) => {
+        const newStocks: OtherStocks = {
+          ids: [...prev.ids],
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              acc[cur] = { ...prev.byId[cur] };
+              if (cur === otherId) {
+                acc[cur].isFavorite = isFavorite;
+              }
+              return acc;
+            },
+            {} as OtherStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
+  );
+
+  const deleteOtherStock = useCallback(
+    (otherId: string) => {
+      store.set(otherStocksState, (prev) => {
+        const newStocks: OtherStocks = {
+          ids: prev.ids.filter((id) => id !== otherId),
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              if (cur === otherId) {
+                return acc;
+              }
+              acc[cur] = { ...prev.byId[cur] };
+              return acc;
+            },
+            {} as OtherStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
   );
   return {
     increaseOtherStock,

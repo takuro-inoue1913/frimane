@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customSpiceMasterRepository } from '@src/interface/repositories/customSpiceMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomSpiceMasterArgs = {
 };
 
 export const useRequestInsertCustomSpiceMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomSpiceMasterArgs) => {
     if (user?.uid === undefined) {

@@ -20,7 +20,7 @@ import { COMMON_COLOR_GREEN } from '@src/utils/consts';
 import { getIncrementalUnit } from '@src/utils/logics/getIncrementalUnit';
 import { LinearGradientButton } from '@src/components/common/GradationButton';
 import { FridgeStock, NormalizedArray, RootStackParamList } from '@src/types';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { userState } from '@src/states/user';
 import { vegetablesStocksState } from '@src/states/fridge/vegetables';
 
@@ -60,16 +60,16 @@ export const FridgeItemCreateScreen: FC<Props> = ({ route }) => {
   const navigation = useTypedNavigation();
   const [visibleCameraModal, setVisibleCameraModal] = useState(false);
 
-  const user = useRecoilValue(userState);
-  const vegetablesStocks = useRecoilValue(vegetablesStocksState);
-  const meatStocks = useRecoilValue(meatStocksState);
-  const stapleFoodStocks = useRecoilValue(stapleFoodStocksState);
-  const spiceStocks = useRecoilValue(spiceStocksState);
-  const seasoningStocks = useRecoilValue(seasoningStocksState);
-  const proteinSourceStocks = useRecoilValue(proteinSourceStocksState);
-  const otherStocks = useRecoilValue(otherStocksState);
-  const fishStocks = useRecoilValue(fishStocksState);
-  const dessertStocks = useRecoilValue(dessertStocksState);
+  const user = useAtomValue(userState);
+  const vegetablesStocks = useAtomValue(vegetablesStocksState);
+  const meatStocks = useAtomValue(meatStocksState);
+  const stapleFoodStocks = useAtomValue(stapleFoodStocksState);
+  const spiceStocks = useAtomValue(spiceStocksState);
+  const seasoningStocks = useAtomValue(seasoningStocksState);
+  const proteinSourceStocks = useAtomValue(proteinSourceStocksState);
+  const otherStocks = useAtomValue(otherStocksState);
+  const fishStocks = useAtomValue(fishStocksState);
+  const dessertStocks = useAtomValue(dessertStocksState);
 
   const requestInsertCustomVegetableMaster =
     useRequestInsertCustomVegetableMaster();

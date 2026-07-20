@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { shoppingMemoRepository } from '@src/interface/repositories/shoppingMemoRepository';
@@ -9,7 +9,7 @@ type useRequestBulkDeleteShoppingMemoArgs = {
 };
 
 export const useRequestBulkDeleteShoppingMemo = () => {
-  const idToken = useRecoilValue(idTokenState);
+  const idToken = useAtomValue(idTokenState);
 
   return async (args: useRequestBulkDeleteShoppingMemoArgs) => {
     try {

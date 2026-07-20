@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { vegetableStockRepository } from '@src/interface/repositories/vegetableStockRepository';
@@ -11,9 +11,9 @@ type UpsertVegetableStockArgs = {
 };
 
 export const useRequestUpsertVegetableIsFavorite = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
-  const vegetablesStocks = useRecoilValue(vegetablesStocksState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
+  const vegetablesStocks = useAtomValue(vegetablesStocksState);
 
   // MEMO: コールバック関数内で最新の vegetablesStocks を参照するために、useRefを使用する
   const vegetablesStocksRef = useRef(vegetablesStocks);
