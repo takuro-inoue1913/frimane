@@ -12,7 +12,10 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "takuro.inoue.frimane",
-      "buildNumber": "2"
+      "buildNumber": "6",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
