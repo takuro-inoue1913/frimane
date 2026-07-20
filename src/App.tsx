@@ -67,25 +67,30 @@ export const App: FC = () => {
       }
     };
 
-    // onAuthStateChanged の発火 or タイムアウトのどちらか一度だけ初期化を完了させる。
-    const settle = (user: typeof auth.currentUser) => {
+    // 初期化(LoadingScreen 解除)は一度だけ。ユーザー状態の反映は毎回行う。
+    const finishInit = () => {
       if (settled) return;
       settled = true;
-      applyUser(user);
       setInitializing(false);
     };
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => settle(user));
+    // ログイン/ログアウトのたびに毎回ユーザー状態を反映し、初回のみ初期化を完了。
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      applyUser(user);
+      finishInit();
+    });
 
     // 安全策: firebase 初期化(トークン更新等のネットワーク要求)がハングしても
-    // 無限ローディングにならないよう、一定時間で auth.currentUser を使って先へ進める。
+    // 無限ローディングにならないよう、一定時間で auth.currentUser を使って初期化を完了。
     // currentUser があればログイン状態を維持でき、不要な再ログインを避けられる。
+    // 以降 onAuthStateChanged が発火すれば applyUser で状態は更新される。
     const fallbackTimer = setTimeout(() => {
       if (!settled) {
         console.warn(
           `[auth] onAuthStateChanged が8秒以内に未発火。currentUser で継続 (currentUser: ${!!auth.currentUser})`,
         );
-        settle(auth.currentUser);
+        applyUser(auth.currentUser);
+        finishInit();
       }
     }, 8000);
 
