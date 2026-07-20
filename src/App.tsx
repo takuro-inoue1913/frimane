@@ -47,7 +47,9 @@ export const App: FC = () => {
       }) ?? TestIds.BANNER;
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    let settled = false;
+
+    const applyUser = (user: typeof auth.currentUser) => {
       if (user) {
         user.getIdToken().then((idToken: string) => setIdToken(idToken));
         // MEMO: user は Object.freeze() されているため、setUser で更新するときは新しいオブジェクトを渡す必要がある。
@@ -63,9 +65,39 @@ export const App: FC = () => {
         setUser(null);
         setIdToken(null);
       }
+    };
+
+    // 初期化(LoadingScreen 解除)は一度だけ。ユーザー状態の反映は毎回行う。
+    const finishInit = () => {
+      if (settled) return;
+      settled = true;
       setInitializing(false);
+    };
+
+    // ログイン/ログアウトのたびに毎回ユーザー状態を反映し、初回のみ初期化を完了。
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      applyUser(user);
+      finishInit();
     });
-    return () => unsubscribe();
+
+    // 安全策: firebase 初期化(トークン更新等のネットワーク要求)がハングしても
+    // 無限ローディングにならないよう、一定時間で auth.currentUser を使って初期化を完了。
+    // currentUser があればログイン状態を維持でき、不要な再ログインを避けられる。
+    // 以降 onAuthStateChanged が発火すれば applyUser で状態は更新される。
+    const fallbackTimer = setTimeout(() => {
+      if (!settled) {
+        console.warn(
+          `[auth] onAuthStateChanged が8秒以内に未発火。currentUser で継続 (currentUser: ${!!auth.currentUser})`,
+        );
+        applyUser(auth.currentUser);
+        finishInit();
+      }
+    }, 8000);
+
+    return () => {
+      clearTimeout(fallbackTimer);
+      unsubscribe();
+    };
   }, [setIdToken, setUser]);
 
   if (initializing) return <LoadingScreen />;
