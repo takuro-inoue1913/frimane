@@ -6,11 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/frimane-logo-app-icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/frimane-logo-app-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -40,7 +35,16 @@
     },
     "plugins": [
       "@react-native-community/datetimepicker",
-      "expo-image"
+      "expo-image",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/frimane-logo-app-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
     ]
   },
   "react-native-google-mobile-ads": {
