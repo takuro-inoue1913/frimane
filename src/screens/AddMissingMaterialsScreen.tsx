@@ -9,7 +9,7 @@ import {
 import { RouteProp } from '@react-navigation/native';
 import { BrunchType, recipesState } from '@src/states/recipe';
 import { RootStackParamList } from '@src/types';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { FridgeMaster, fridgeMasterState } from '@src/states/fridge';
 import { Image as ExpoImage } from 'expo-image';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -34,8 +34,8 @@ type MissingMaterial = {
 
 export const AddMissingMaterialsScreen: FC<Props> = ({ route }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const recipes = useRecoilValue(recipesState);
-  const fridgeMaster = useRecoilValue(fridgeMasterState);
+  const recipes = useAtomValue(recipesState);
+  const fridgeMaster = useAtomValue(fridgeMasterState);
   const { shoppingMemo } = useRequestGetAllShoppingMemo();
   const requestInsertShoppingMemo = useRequestInsertShoppingMemo();
   const requestUpdateShoppingMemo = useRequestUpdateShoppingMemo();

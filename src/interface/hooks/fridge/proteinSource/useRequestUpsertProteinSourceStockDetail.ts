@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { proteinSourceStockRepository } from '@src/interface/repositories/proteinSourceStockRepository';
@@ -15,9 +15,9 @@ type UpsertProteinSourceStockDetail = {
 };
 
 export const useRequestUpsertProteinSourceStockDetail = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
-  const proteinSourceStocks = useRecoilValue(proteinSourceStocksState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
+  const proteinSourceStocks = useAtomValue(proteinSourceStocksState);
 
   // MEMO: コールバック関数内で最新の proteinSourceStocks を参照するために、useRefを使用する
   const proteinSourceStocksRef = useRef(proteinSourceStocks);

@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customOtherMasterRepository } from '@src/interface/repositories/customOtherMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomOtherMasterArgs = {
 };
 
 export const useRequestInsertCustomOtherMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomOtherMasterArgs) => {
     if (user?.uid === undefined) {

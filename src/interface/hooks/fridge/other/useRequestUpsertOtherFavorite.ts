@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { otherStocksState } from '@src/states/fridge/other';
@@ -11,9 +11,9 @@ type UpsertOtherStockArgs = {
 };
 
 export const useRequestUpsertOtherFavorite = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
-  const otherStocks = useRecoilValue(otherStocksState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
+  const otherStocks = useAtomValue(otherStocksState);
 
   // MEMO: コールバック関数内で最新の otherStocks を参照するために、useRefを使用する
   const otherStocksRef = useRef(otherStocks);

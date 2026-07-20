@@ -1,4 +1,5 @@
-import { useRecoilCallback } from 'recoil';
+import { useCallback } from 'react';
+import { useStore } from 'jotai';
 import {
   DessertStocks,
   dessertStocksIdsState,
@@ -60,155 +61,20 @@ type DessertStockActions = {
 };
 
 export const useDessertStockActions = () => {
+  const store = useStore();
   const increaseDessertStock: DessertStockActions['increaseDessertStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: dessertId, quantity }) => {
-          set(dessertStocksState, (prev) => {
-            const newStocks: DessertStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === dessertId) {
-                    acc[cur].quantity += quantity;
-                    acc[cur].hasStock = true;
-                  }
-                  return acc;
-                },
-                {} as DessertStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const decreaseDessertStock: DessertStockActions['decreaseDessertStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: dessertId, quantity }) => {
-          set(dessertStocksState, (prev) => {
-            const updatedQuantity = prev.byId[dessertId].quantity - quantity;
-
-            const newStocks: DessertStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === dessertId) {
-                    acc[cur].quantity = Math.max(updatedQuantity, 0);
-                    acc[cur].hasStock = updatedQuantity > 0;
-                  }
-                  return acc;
-                },
-                {} as DessertStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const updateDessertStockDetail: DessertStockActions['updateDessertStockDetail'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({
-          id: dessertId,
-          quantity,
-          incrementalUnit,
-          expirationDate,
-          memo,
-          isFavorite,
-        }) => {
-          set(dessertStocksState, (prev) => {
-            const newStocks: DessertStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === dessertId) {
-                    acc[cur].quantity = quantity;
-                    acc[cur].incrementalUnit = incrementalUnit;
-                    acc[cur].expirationDate = expirationDate;
-                    acc[cur].memo = memo;
-                    acc[cur].hasStock = quantity > 0;
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as DessertStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const filterDessertStocks: DessertStockActions['filterVegetableStocks'] =
-    useRecoilCallback(
-      ({ snapshot, set }) =>
-        async () => {
-          const selectFilterOptions = await snapshot.getPromise(
-            selectFilterOptionsState,
-          );
-          const dessertStocksIds = await snapshot.getPromise(
-            dessertStocksIdsState,
-          );
-          set(dessertStocksState, (prev) => {
-            const sortedIds = filterDessertStock({
-              dessertStocks: prev,
-              originalIds: dessertStocksIds,
-              selectFilterOptions,
-            });
-            return {
-              ids: sortedIds,
-              byId: prev.byId,
-            };
-          });
-        },
-      [],
-    );
-
-  const updateIsFavorite: DessertStockActions['updateIsFavorite'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: dessertId, isFavorite }) => {
-          set(dessertStocksState, (prev) => {
-            const newStocks: DessertStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === dessertId) {
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as DessertStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const deleteDessertStock = useRecoilCallback(
-    ({ set }) =>
-      (dessertId: string) => {
-        set(dessertStocksState, (prev) => {
+    useCallback(
+      ({ id: dessertId, quantity }) => {
+        store.set(dessertStocksState, (prev) => {
           const newStocks: DessertStocks = {
-            ids: prev.ids.filter((id) => id !== dessertId),
+            ids: [...prev.ids],
             byId: prev.ids.reduce(
               (acc, cur) => {
-                if (cur === dessertId) {
-                  return acc;
-                }
                 acc[cur] = { ...prev.byId[cur] };
+                if (cur === dessertId) {
+                  acc[cur].quantity += quantity;
+                  acc[cur].hasStock = true;
+                }
                 return acc;
               },
               {} as DessertStocks['byId'],
@@ -217,7 +83,129 @@ export const useDessertStockActions = () => {
           return newStocks;
         });
       },
-    [],
+      [store],
+    );
+
+  const decreaseDessertStock: DessertStockActions['decreaseDessertStock'] =
+    useCallback(
+      ({ id: dessertId, quantity }) => {
+        store.set(dessertStocksState, (prev) => {
+          const updatedQuantity = prev.byId[dessertId].quantity - quantity;
+
+          const newStocks: DessertStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === dessertId) {
+                  acc[cur].quantity = Math.max(updatedQuantity, 0);
+                  acc[cur].hasStock = updatedQuantity > 0;
+                }
+                return acc;
+              },
+              {} as DessertStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const updateDessertStockDetail: DessertStockActions['updateDessertStockDetail'] =
+    useCallback(
+      ({
+        id: dessertId,
+        quantity,
+        incrementalUnit,
+        expirationDate,
+        memo,
+        isFavorite,
+      }) => {
+        store.set(dessertStocksState, (prev) => {
+          const newStocks: DessertStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === dessertId) {
+                  acc[cur].quantity = quantity;
+                  acc[cur].incrementalUnit = incrementalUnit;
+                  acc[cur].expirationDate = expirationDate;
+                  acc[cur].memo = memo;
+                  acc[cur].hasStock = quantity > 0;
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as DessertStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const filterDessertStocks: DessertStockActions['filterVegetableStocks'] =
+    useCallback(async () => {
+      const selectFilterOptions = await store.get(selectFilterOptionsState);
+      const dessertStocksIds = await store.get(dessertStocksIdsState);
+      store.set(dessertStocksState, (prev) => {
+        const sortedIds = filterDessertStock({
+          dessertStocks: prev,
+          originalIds: dessertStocksIds,
+          selectFilterOptions,
+        });
+        return {
+          ids: sortedIds,
+          byId: prev.byId,
+        };
+      });
+    }, [store]);
+
+  const updateIsFavorite: DessertStockActions['updateIsFavorite'] = useCallback(
+    ({ id: dessertId, isFavorite }) => {
+      store.set(dessertStocksState, (prev) => {
+        const newStocks: DessertStocks = {
+          ids: [...prev.ids],
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              acc[cur] = { ...prev.byId[cur] };
+              if (cur === dessertId) {
+                acc[cur].isFavorite = isFavorite;
+              }
+              return acc;
+            },
+            {} as DessertStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
+  );
+
+  const deleteDessertStock = useCallback(
+    (dessertId: string) => {
+      store.set(dessertStocksState, (prev) => {
+        const newStocks: DessertStocks = {
+          ids: prev.ids.filter((id) => id !== dessertId),
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              if (cur === dessertId) {
+                return acc;
+              }
+              acc[cur] = { ...prev.byId[cur] };
+              return acc;
+            },
+            {} as DessertStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
   );
   return {
     increaseDessertStock,

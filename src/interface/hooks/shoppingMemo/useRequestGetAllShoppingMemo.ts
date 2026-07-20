@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { shoppingMemoRepository } from '@src/interface/repositories/shoppingMemoRepository';
@@ -8,9 +8,9 @@ import { shoppingMemosState } from '@src/states/shoppingMemo';
 import { fridgeMasterState } from '@src/states/fridge';
 
 export const useRequestGetAllShoppingMemo = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const [shoppingMemo, setShoppingMemo] = useRecoilState(shoppingMemosState);
-  const fridgeMaster = useRecoilValue(fridgeMasterState);
+  const idToken = useAtomValue(idTokenState);
+  const [shoppingMemo, setShoppingMemo] = useAtom(shoppingMemosState);
+  const fridgeMaster = useAtomValue(fridgeMasterState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'all', 'shopping', 'memo'],

@@ -1,11 +1,11 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { customSeasoningMasterRepository } from '@src/interface/repositories/customSeasoningMasterRepository';
 import Toast from 'react-native-toast-message';
 
 export const useRequestDeleteCustomSeasoningMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
+  const idToken = useAtomValue(idTokenState);
 
   return async (seasoningId: string) => {
     try {

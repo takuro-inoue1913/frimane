@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { useQuery } from '@tanstack/react-query';
@@ -10,8 +10,8 @@ export const useRequestGetUsersDailyRecipes = (
   startDate: string,
   endDate: string,
 ) => {
-  const idToken = useRecoilValue(idTokenState);
-  const [dailyRecipes, setDailyRecipes] = useRecoilState(dailyRecipesState);
+  const idToken = useAtomValue(idTokenState);
+  const [dailyRecipes, setDailyRecipes] = useAtom(dailyRecipesState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'users', 'daily', 'recipes'],

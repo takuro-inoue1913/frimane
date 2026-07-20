@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import Toast from 'react-native-toast-message';
@@ -13,9 +13,9 @@ type InsertUserDailyRecipe = {
 };
 
 export const useRequestInsertUserDailyRecipe = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
-  const dailyRecipes = useRecoilValue(dailyRecipesState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
+  const dailyRecipes = useAtomValue(dailyRecipesState);
 
   return async (args: InsertUserDailyRecipe) => {
     if (!user) {

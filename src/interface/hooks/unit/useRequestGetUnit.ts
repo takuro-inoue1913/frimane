@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { unitMasterState, UnitMater } from '@src/states/fridge';
 import { idTokenState } from '@src/states/user';
 import { unitRepository } from '@src/interface/repositories/unitRepository';
 
 export const useRequestGetUnit = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const [unitMaster, setUnitMaster] = useRecoilState(unitMasterState);
+  const idToken = useAtomValue(idTokenState);
+  const [unitMaster, setUnitMaster] = useAtom(unitMasterState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'unit'],

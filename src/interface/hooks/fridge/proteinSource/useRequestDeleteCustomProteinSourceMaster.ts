@@ -1,11 +1,11 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { customProteinSourceMasterRepository } from '@src/interface/repositories/customProteinSourceMasterRepository';
 import Toast from 'react-native-toast-message';
 
 export const useRequestDeleteCustomProteinSourceMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
+  const idToken = useAtomValue(idTokenState);
 
   return async (proteinSourceId: string) => {
     try {

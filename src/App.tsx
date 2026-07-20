@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useAtom, useSetAtom } from 'jotai';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -33,18 +33,18 @@ import { RecipeListScreen } from './screens/RecipeLIstScreen';
 import { RecipeEditScreen } from './screens/RecipeEditScreen';
 
 export const App: FC = () => {
-  const setUser = useSetRecoilState(userState);
-  const [idToken, setIdToken] = useRecoilState(idTokenState);
+  const setUser = useSetAtom(userState);
+  const [idToken, setIdToken] = useAtom(idTokenState);
   const [initializing, setInitializing] = useState(true);
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator<RootStackParamList>();
   const unitId = __DEV__
     ? TestIds.BANNER
-    : Platform.select({
+    : (Platform.select({
         ios: 'ca-app-pub-1013230797140961/5537108885',
         // 未設定
         android: 'ca-app-pub-xxxxxxxxxxxx/yyyyyyyyyy',
-      }) ?? TestIds.BANNER;
+      }) ?? TestIds.BANNER);
 
   useEffect(() => {
     let settled = false;

@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { fishStockRepository } from '@src/interface/repositories/fishStockRepository';
@@ -15,9 +15,9 @@ type UpsertFishStockDetail = {
 };
 
 export const useRequestUpsertFishStockDetail = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
-  const fishStocks = useRecoilValue(fishStocksState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
+  const fishStocks = useAtomValue(fishStocksState);
 
   // MEMO: コールバック関数内で最新の fishStocks を参照するために、useRefを使用する
   const fishStocksRef = useRef(fishStocks);

@@ -1,4 +1,5 @@
-import { useRecoilCallback } from 'recoil';
+import { useCallback } from 'react';
+import { useStore } from 'jotai';
 import {
   SpiceStocks,
   spiceStocksIdsState,
@@ -60,153 +61,20 @@ type SpiceStockActions = {
 };
 
 export const useSpiceStockActions = () => {
+  const store = useStore();
   const increaseSpiceStock: SpiceStockActions['increaseSpiceStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: spiceId, quantity }) => {
-          set(spiceStocksState, (prev) => {
-            const newStocks: SpiceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === spiceId) {
-                    acc[cur].quantity += quantity;
-                    acc[cur].hasStock = true;
-                  }
-                  return acc;
-                },
-                {} as SpiceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const decreaseSpiceStock: SpiceStockActions['decreaseSpiceStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: spiceId, quantity }) => {
-          set(spiceStocksState, (prev) => {
-            const updatedQuantity = prev.byId[spiceId].quantity - quantity;
-
-            const newStocks: SpiceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === spiceId) {
-                    acc[cur].quantity = Math.max(updatedQuantity, 0);
-                    acc[cur].hasStock = updatedQuantity > 0;
-                  }
-                  return acc;
-                },
-                {} as SpiceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const updateSpiceStockDetail: SpiceStockActions['updateSpiceStockDetail'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({
-          id: spiceId,
-          quantity,
-          incrementalUnit,
-          expirationDate,
-          memo,
-          isFavorite,
-        }) => {
-          set(spiceStocksState, (prev) => {
-            const newStocks: SpiceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === spiceId) {
-                    acc[cur].quantity = quantity;
-                    acc[cur].incrementalUnit = incrementalUnit;
-                    acc[cur].expirationDate = expirationDate;
-                    acc[cur].memo = memo;
-                    acc[cur].hasStock = quantity > 0;
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as SpiceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const filterSpiceStocks: SpiceStockActions['filterVegetableStocks'] =
-    useRecoilCallback(
-      ({ snapshot, set }) =>
-        async () => {
-          const selectFilterOptions = await snapshot.getPromise(
-            selectFilterOptionsState,
-          );
-          const spiceStocksIds = await snapshot.getPromise(spiceStocksIdsState);
-          set(spiceStocksState, (prev) => {
-            const sortedIds = filterSpiceStock({
-              spiceStocks: prev,
-              originalIds: spiceStocksIds,
-              selectFilterOptions,
-            });
-            return {
-              ids: sortedIds,
-              byId: prev.byId,
-            };
-          });
-        },
-      [],
-    );
-
-  const updateIsFavorite: SpiceStockActions['updateIsFavorite'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: spiceId, isFavorite }) => {
-          set(spiceStocksState, (prev) => {
-            const newStocks: SpiceStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === spiceId) {
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as SpiceStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const deleteSpiceStock = useRecoilCallback(
-    ({ set }) =>
-      (spiceId: string) => {
-        set(spiceStocksState, (prev) => {
+    useCallback(
+      ({ id: spiceId, quantity }) => {
+        store.set(spiceStocksState, (prev) => {
           const newStocks: SpiceStocks = {
-            ids: prev.ids.filter((id) => id !== spiceId),
+            ids: [...prev.ids],
             byId: prev.ids.reduce(
               (acc, cur) => {
-                if (cur === spiceId) {
-                  return acc;
-                }
                 acc[cur] = { ...prev.byId[cur] };
+                if (cur === spiceId) {
+                  acc[cur].quantity += quantity;
+                  acc[cur].hasStock = true;
+                }
                 return acc;
               },
               {} as SpiceStocks['byId'],
@@ -215,7 +83,129 @@ export const useSpiceStockActions = () => {
           return newStocks;
         });
       },
-    [],
+      [store],
+    );
+
+  const decreaseSpiceStock: SpiceStockActions['decreaseSpiceStock'] =
+    useCallback(
+      ({ id: spiceId, quantity }) => {
+        store.set(spiceStocksState, (prev) => {
+          const updatedQuantity = prev.byId[spiceId].quantity - quantity;
+
+          const newStocks: SpiceStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === spiceId) {
+                  acc[cur].quantity = Math.max(updatedQuantity, 0);
+                  acc[cur].hasStock = updatedQuantity > 0;
+                }
+                return acc;
+              },
+              {} as SpiceStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const updateSpiceStockDetail: SpiceStockActions['updateSpiceStockDetail'] =
+    useCallback(
+      ({
+        id: spiceId,
+        quantity,
+        incrementalUnit,
+        expirationDate,
+        memo,
+        isFavorite,
+      }) => {
+        store.set(spiceStocksState, (prev) => {
+          const newStocks: SpiceStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === spiceId) {
+                  acc[cur].quantity = quantity;
+                  acc[cur].incrementalUnit = incrementalUnit;
+                  acc[cur].expirationDate = expirationDate;
+                  acc[cur].memo = memo;
+                  acc[cur].hasStock = quantity > 0;
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as SpiceStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const filterSpiceStocks: SpiceStockActions['filterVegetableStocks'] =
+    useCallback(async () => {
+      const selectFilterOptions = await store.get(selectFilterOptionsState);
+      const spiceStocksIds = await store.get(spiceStocksIdsState);
+      store.set(spiceStocksState, (prev) => {
+        const sortedIds = filterSpiceStock({
+          spiceStocks: prev,
+          originalIds: spiceStocksIds,
+          selectFilterOptions,
+        });
+        return {
+          ids: sortedIds,
+          byId: prev.byId,
+        };
+      });
+    }, [store]);
+
+  const updateIsFavorite: SpiceStockActions['updateIsFavorite'] = useCallback(
+    ({ id: spiceId, isFavorite }) => {
+      store.set(spiceStocksState, (prev) => {
+        const newStocks: SpiceStocks = {
+          ids: [...prev.ids],
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              acc[cur] = { ...prev.byId[cur] };
+              if (cur === spiceId) {
+                acc[cur].isFavorite = isFavorite;
+              }
+              return acc;
+            },
+            {} as SpiceStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
+  );
+
+  const deleteSpiceStock = useCallback(
+    (spiceId: string) => {
+      store.set(spiceStocksState, (prev) => {
+        const newStocks: SpiceStocks = {
+          ids: prev.ids.filter((id) => id !== spiceId),
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              if (cur === spiceId) {
+                return acc;
+              }
+              acc[cur] = { ...prev.byId[cur] };
+              return acc;
+            },
+            {} as SpiceStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
   );
 
   return {

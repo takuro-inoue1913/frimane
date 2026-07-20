@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customSeasoningMasterRepository } from '@src/interface/repositories/customSeasoningMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomSeasoningMasterArgs = {
 };
 
 export const useRequestInsertCustomSeasoningMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomSeasoningMasterArgs) => {
     if (user?.uid === undefined) {

@@ -11,7 +11,7 @@ import {
   Dimensions,
   TextInput,
 } from 'react-native';
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width } = Dimensions.get('window');
@@ -21,7 +21,7 @@ type Props = {
 };
 
 export const FilterForm: FC<Props> = ({ onPress }) => {
-  const [selectFilterOptions, setSelectFilterOptionsState] = useRecoilState(
+  const [selectFilterOptions, setSelectFilterOptionsState] = useAtom(
     selectFilterOptionsState,
   );
   const narrowDownRow = useChunkedArray(FILTER_OPTIONS.sort, 2);

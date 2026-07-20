@@ -1,11 +1,11 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { customSpiceMasterRepository } from '@src/interface/repositories/customSpiceMasterRepository';
 import Toast from 'react-native-toast-message';
 
 export const useRequestDeleteCustomSpiceMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
+  const idToken = useAtomValue(idTokenState);
 
   return async (spiceId: string) => {
     try {

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { generateProteinSourceStocks } from '@src/interface/logics/generate/generateProteinSourceStocks';
@@ -12,14 +12,12 @@ import { filterProteinSourceStock } from '@src/states/fridge/proteinSource/logic
 import { selectFilterOptionsState } from '@src/states/fridge';
 
 export const useRequestGetProteinSourceStocks = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const [proteinSourceStocks, setProteinSourceStocks] = useRecoilState(
+  const idToken = useAtomValue(idTokenState);
+  const [proteinSourceStocks, setProteinSourceStocks] = useAtom(
     proteinSourceStocksState,
   );
-  const setProteinSourceStocksIds = useSetRecoilState(
-    proteinSourceStocksIdsState,
-  );
-  const selectFilterOptions = useRecoilValue(selectFilterOptionsState);
+  const setProteinSourceStocksIds = useSetAtom(proteinSourceStocksIdsState);
+  const selectFilterOptions = useAtomValue(selectFilterOptionsState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'proteinSource', 'master', 'stock'],

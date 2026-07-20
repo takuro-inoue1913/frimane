@@ -1,27 +1,14 @@
-import React, { FC, useEffect } from 'react';
-import { RecoilRoot, useRecoilSnapshot } from 'recoil';
+import React, { FC } from 'react';
+import { Provider } from 'jotai';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App } from '@src/App';
 
 import '@src/utils/dayjsConfig';
 import { LogBox } from 'react-native';
 
-const DebugObserver = ({ isDebug }: { isDebug?: boolean }) => {
-  const snapshot = useRecoilSnapshot();
-  useEffect(() => {
-    if (!isDebug) return;
-    console.debug('The following atoms were modified:');
-    for (const node of snapshot.getNodes_UNSTABLE({ isModified: true })) {
-      console.debug(node.key, snapshot.getLoadable(node));
-    }
-  }, [snapshot, isDebug]);
-
-  return null;
-};
-
 /**
  * App.tsxのラッパー。
- * MEMO: App.tsx で useRecoilState を使用しているため、一階層上で RecoilRoot でラップする必要がある。
+ * MEMO: App.tsx で jotai の atom を使用しているため、一階層上で Provider でラップする。
  */
 export const AppWrapper: FC = () => {
   // MEMO: 最初のキャシュがない画像読み込みの時に出る警告を無視する。
@@ -30,11 +17,10 @@ export const AppWrapper: FC = () => {
   const queryClient = new QueryClient();
 
   return (
-    <RecoilRoot>
-      <DebugObserver />
+    <Provider>
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
-    </RecoilRoot>
+    </Provider>
   );
 };

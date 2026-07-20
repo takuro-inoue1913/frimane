@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { generateStapleFoodStocks } from '@src/interface/logics/generate/generateStapleFoodStocks';
@@ -12,12 +12,12 @@ import { filterStapleFoodStock } from '@src/states/fridge/stapleFood/logics/filt
 import { selectFilterOptionsState } from '@src/states/fridge';
 
 export const useRequestGetStapleFoodStocks = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const [stapleFoodStocks, setStapleFoodStocks] = useRecoilState(
+  const idToken = useAtomValue(idTokenState);
+  const [stapleFoodStocks, setStapleFoodStocks] = useAtom(
     stapleFoodStocksState,
   );
-  const setStapleFoodStocksIds = useSetRecoilState(stapleFoodStocksIdsState);
-  const selectFilterOptions = useRecoilValue(selectFilterOptionsState);
+  const setStapleFoodStocksIds = useSetAtom(stapleFoodStocksIdsState);
+  const selectFilterOptions = useAtomValue(selectFilterOptionsState);
 
   const { isFetching, refetch } = useQuery({
     queryKey: ['graphl', 'get', 'stapleFood', 'master', 'stock'],

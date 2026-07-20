@@ -23,7 +23,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useRequestInsertRecipe } from '@src/interface/hooks/recipe/useRequestInsertRecipe';
 import { uploadUserImage } from '@src/interface/firebase/uploadUserImage';
 import { userState } from '@src/states/user';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { useTypedNavigation } from '@src/hooks/useTypedNavigation';
 import Toast from 'react-native-toast-message';
 import { useRecipesActions } from '@src/states/recipe/actions';
@@ -47,7 +47,7 @@ export const RecipeCreateScreen: FC = () => {
   const requestInsertRecipe = useRequestInsertRecipe();
   const { addRecipe } = useRecipesActions();
   const navigation = useTypedNavigation();
-  const user = useRecoilValue(userState);
+  const user = useAtomValue(userState);
 
   const [isSending, setIsSending] = useState(false);
   const [visibleCameraModal, setVisibleCameraModal] = useState(false);

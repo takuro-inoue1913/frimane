@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { customFishMasterRepository } from '@src/interface/repositories/customFishMasterRepository';
@@ -16,8 +16,8 @@ type InsertCustomFishMasterArgs = {
 };
 
 export const useRequestInsertCustomFishMaster = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
 
   return async (args: InsertCustomFishMasterArgs) => {
     if (user?.uid === undefined) {

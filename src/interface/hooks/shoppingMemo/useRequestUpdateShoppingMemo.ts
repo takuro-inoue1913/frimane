@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState } from '@src/states/user';
 import { shoppingMemoRepository } from '@src/interface/repositories/shoppingMemoRepository';
@@ -11,7 +11,7 @@ type UpdateShoppingMemoArgs = {
 };
 
 export const useRequestUpdateShoppingMemo = () => {
-  const idToken = useRecoilValue(idTokenState);
+  const idToken = useAtomValue(idTokenState);
 
   return async (args: UpdateShoppingMemoArgs) => {
     try {

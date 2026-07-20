@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 import { TypeName } from '@src/states/fridge';
 import { NormalizedArray } from '@src/types';
 
@@ -21,9 +21,6 @@ export type ShoppingMemo = NormalizedArray<{
 }>;
 
 export const shoppingMemosState = atom<ShoppingMemo>({
-  key: 'shoppingMemosState',
-  default: {
-    ids: [],
-    byId: {},
-  },
+  ids: [],
+  byId: {},
 });

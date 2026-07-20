@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 import { TypeName } from '@src/states/fridge';
 import { NormalizedArray } from '@src/types';
 
@@ -33,17 +33,11 @@ export type DailyRecipes = NormalizedArray<{
 }>;
 
 export const recipesState = atom<Recipes>({
-  key: 'recipesState',
-  default: {
-    ids: [],
-    byId: {},
-  },
+  ids: [],
+  byId: {},
 });
 
 export const dailyRecipesState = atom<DailyRecipes>({
-  key: 'dailyRecipes',
-  default: {
-    ids: [],
-    byId: {},
-  },
+  ids: [],
+  byId: {},
 });

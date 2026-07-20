@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 
 import { idTokenState, userState } from '@src/states/user';
 import { recipeRepository } from '@src/interface/repositories/recipeRepository';
@@ -23,9 +23,9 @@ type ResultData = {
 };
 
 export const useRequestInsertRecipe = () => {
-  const idToken = useRecoilValue(idTokenState);
-  const user = useRecoilValue(userState);
-  const fridgeMaster = useRecoilValue(fridgeMasterState);
+  const idToken = useAtomValue(idTokenState);
+  const user = useAtomValue(userState);
+  const fridgeMaster = useAtomValue(fridgeMasterState);
 
   return async (args: InsertShoppingRecipeArgs) => {
     if (!user) {

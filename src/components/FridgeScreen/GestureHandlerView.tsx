@@ -6,7 +6,7 @@ import {
   PanGestureHandler,
   State,
 } from 'react-native-gesture-handler';
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 
 type Props = {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ type Props = {
  * 左右のスワイプを検知するコンポーネント。
  */
 export const GestureHandlerView: FC<Props> = ({ children }) => {
-  const [selectFridgeCategory, setSelectFridgeCategory] = useRecoilState(
+  const [selectFridgeCategory, setSelectFridgeCategory] = useAtom(
     selectFridgeCategoryState,
   );
   selectItems;

@@ -1,4 +1,5 @@
-import { useRecoilCallback } from 'recoil';
+import { useCallback } from 'react';
+import { useStore } from 'jotai';
 import {
   SeasoningStocks,
   seasoningStocksIdsState,
@@ -60,155 +61,20 @@ type SeasoningStockActions = {
 };
 
 export const useSeasoningStockActions = () => {
+  const store = useStore();
   const increaseSeasoningStock: SeasoningStockActions['increaseSeasoningStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: seasoningId, quantity }) => {
-          set(seasoningStocksState, (prev) => {
-            const newStocks: SeasoningStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === seasoningId) {
-                    acc[cur].quantity += quantity;
-                    acc[cur].hasStock = true;
-                  }
-                  return acc;
-                },
-                {} as SeasoningStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const decreaseSeasoningStock: SeasoningStockActions['decreaseSeasoningStock'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: seasoningId, quantity }) => {
-          set(seasoningStocksState, (prev) => {
-            const updatedQuantity = prev.byId[seasoningId].quantity - quantity;
-
-            const newStocks: SeasoningStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === seasoningId) {
-                    acc[cur].quantity = Math.max(updatedQuantity, 0);
-                    acc[cur].hasStock = updatedQuantity > 0;
-                  }
-                  return acc;
-                },
-                {} as SeasoningStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const updateSeasoningStockDetail: SeasoningStockActions['updateSeasoningStockDetail'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({
-          id: seasoningId,
-          quantity,
-          incrementalUnit,
-          expirationDate,
-          memo,
-          isFavorite,
-        }) => {
-          set(seasoningStocksState, (prev) => {
-            const newStocks: SeasoningStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === seasoningId) {
-                    acc[cur].quantity = quantity;
-                    acc[cur].incrementalUnit = incrementalUnit;
-                    acc[cur].expirationDate = expirationDate;
-                    acc[cur].memo = memo;
-                    acc[cur].hasStock = quantity > 0;
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as SeasoningStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const filterSeasoningStocks: SeasoningStockActions['filterVegetableStocks'] =
-    useRecoilCallback(
-      ({ snapshot, set }) =>
-        async () => {
-          const selectFilterOptions = await snapshot.getPromise(
-            selectFilterOptionsState,
-          );
-          const seasoningStocksIds = await snapshot.getPromise(
-            seasoningStocksIdsState,
-          );
-          set(seasoningStocksState, (prev) => {
-            const sortedIds = filterSeasoningStock({
-              seasoningStocks: prev,
-              originalIds: seasoningStocksIds,
-              selectFilterOptions,
-            });
-            return {
-              ids: sortedIds,
-              byId: prev.byId,
-            };
-          });
-        },
-      [],
-    );
-
-  const updateIsFavorite: SeasoningStockActions['updateIsFavorite'] =
-    useRecoilCallback(
-      ({ set }) =>
-        ({ id: seasoningId, isFavorite }) => {
-          set(seasoningStocksState, (prev) => {
-            const newStocks: SeasoningStocks = {
-              ids: [...prev.ids],
-              byId: prev.ids.reduce(
-                (acc, cur) => {
-                  acc[cur] = { ...prev.byId[cur] };
-                  if (cur === seasoningId) {
-                    acc[cur].isFavorite = isFavorite;
-                  }
-                  return acc;
-                },
-                {} as SeasoningStocks['byId'],
-              ),
-            };
-            return newStocks;
-          });
-        },
-      [],
-    );
-
-  const deleteSeasoningStock = useRecoilCallback(
-    ({ set }) =>
-      (seasoningId: string) => {
-        set(seasoningStocksState, (prev) => {
+    useCallback(
+      ({ id: seasoningId, quantity }) => {
+        store.set(seasoningStocksState, (prev) => {
           const newStocks: SeasoningStocks = {
-            ids: prev.ids.filter((id) => id !== seasoningId),
+            ids: [...prev.ids],
             byId: prev.ids.reduce(
               (acc, cur) => {
-                if (cur === seasoningId) {
-                  return acc;
-                }
                 acc[cur] = { ...prev.byId[cur] };
+                if (cur === seasoningId) {
+                  acc[cur].quantity += quantity;
+                  acc[cur].hasStock = true;
+                }
                 return acc;
               },
               {} as SeasoningStocks['byId'],
@@ -217,7 +83,130 @@ export const useSeasoningStockActions = () => {
           return newStocks;
         });
       },
-    [],
+      [store],
+    );
+
+  const decreaseSeasoningStock: SeasoningStockActions['decreaseSeasoningStock'] =
+    useCallback(
+      ({ id: seasoningId, quantity }) => {
+        store.set(seasoningStocksState, (prev) => {
+          const updatedQuantity = prev.byId[seasoningId].quantity - quantity;
+
+          const newStocks: SeasoningStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === seasoningId) {
+                  acc[cur].quantity = Math.max(updatedQuantity, 0);
+                  acc[cur].hasStock = updatedQuantity > 0;
+                }
+                return acc;
+              },
+              {} as SeasoningStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const updateSeasoningStockDetail: SeasoningStockActions['updateSeasoningStockDetail'] =
+    useCallback(
+      ({
+        id: seasoningId,
+        quantity,
+        incrementalUnit,
+        expirationDate,
+        memo,
+        isFavorite,
+      }) => {
+        store.set(seasoningStocksState, (prev) => {
+          const newStocks: SeasoningStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === seasoningId) {
+                  acc[cur].quantity = quantity;
+                  acc[cur].incrementalUnit = incrementalUnit;
+                  acc[cur].expirationDate = expirationDate;
+                  acc[cur].memo = memo;
+                  acc[cur].hasStock = quantity > 0;
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as SeasoningStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const filterSeasoningStocks: SeasoningStockActions['filterVegetableStocks'] =
+    useCallback(async () => {
+      const selectFilterOptions = await store.get(selectFilterOptionsState);
+      const seasoningStocksIds = await store.get(seasoningStocksIdsState);
+      store.set(seasoningStocksState, (prev) => {
+        const sortedIds = filterSeasoningStock({
+          seasoningStocks: prev,
+          originalIds: seasoningStocksIds,
+          selectFilterOptions,
+        });
+        return {
+          ids: sortedIds,
+          byId: prev.byId,
+        };
+      });
+    }, [store]);
+
+  const updateIsFavorite: SeasoningStockActions['updateIsFavorite'] =
+    useCallback(
+      ({ id: seasoningId, isFavorite }) => {
+        store.set(seasoningStocksState, (prev) => {
+          const newStocks: SeasoningStocks = {
+            ids: [...prev.ids],
+            byId: prev.ids.reduce(
+              (acc, cur) => {
+                acc[cur] = { ...prev.byId[cur] };
+                if (cur === seasoningId) {
+                  acc[cur].isFavorite = isFavorite;
+                }
+                return acc;
+              },
+              {} as SeasoningStocks['byId'],
+            ),
+          };
+          return newStocks;
+        });
+      },
+      [store],
+    );
+
+  const deleteSeasoningStock = useCallback(
+    (seasoningId: string) => {
+      store.set(seasoningStocksState, (prev) => {
+        const newStocks: SeasoningStocks = {
+          ids: prev.ids.filter((id) => id !== seasoningId),
+          byId: prev.ids.reduce(
+            (acc, cur) => {
+              if (cur === seasoningId) {
+                return acc;
+              }
+              acc[cur] = { ...prev.byId[cur] };
+              return acc;
+            },
+            {} as SeasoningStocks['byId'],
+          ),
+        };
+        return newStocks;
+      });
+    },
+    [store],
   );
   return {
     increaseSeasoningStock,
