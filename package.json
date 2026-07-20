@@ -37,7 +37,7 @@
     "expo-splash-screen": "~57.0.4",
     "expo-status-bar": "~57.0.1",
     "expo-updates": "~57.0.8",
-    "firebase": "^10.7.1",
+    "firebase": "^12.0.0",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "react": "19.2.3",
