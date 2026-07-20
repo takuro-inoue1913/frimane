@@ -45,10 +45,13 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "iosAppId": "ca-app-pub-1013230797140961~9512399959"
+        }
+      ]
     ]
-  },
-  "react-native-google-mobile-ads": {
-    "ios_app_id": "ca-app-pub-1013230797140961~9512399959"
   }
 }
