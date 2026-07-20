@@ -2,7 +2,7 @@
   "expo": {
     "name": "frimane",
     "slug": "frimane",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/frimane-logo-app-icon.png",
     "userInterfaceStyle": "light",
@@ -11,7 +11,8 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "takuro.inoue.frimane"
+      "bundleIdentifier": "takuro.inoue.frimane",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
