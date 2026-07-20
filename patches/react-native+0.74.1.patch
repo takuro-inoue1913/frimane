@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native/scripts/cocoapods/privacy_manifest_utils.rb b/node_modules/react-native/scripts/cocoapods/privacy_manifest_utils.rb
+index 7600829..d2ae4f7 100644
+--- a/node_modules/react-native/scripts/cocoapods/privacy_manifest_utils.rb
++++ b/node_modules/react-native/scripts/cocoapods/privacy_manifest_utils.rb
+@@ -108,7 +108,7 @@ module PrivacyManifestUtils
+                 if File.basename(file_path) == 'PrivacyInfo.xcprivacy'
+                     content = Xcodeproj::Plist.read_from_path(file_path)
+                     accessed_api_types = content["NSPrivacyAccessedAPITypes"]
+-                    accessed_api_types.each do |accessed_api|
++                    (accessed_api_types || []).each do |accessed_api|
+                     api_type = accessed_api["NSPrivacyAccessedAPIType"]
+                     reasons = accessed_api["NSPrivacyAccessedAPITypeReasons"]
+                     used_apis[api_type] ||= []
