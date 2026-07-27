@@ -48,7 +48,7 @@
     "react-hook-form": "^7",
     "react-native": "0.86.0",
     "react-native-calendars": "^1.1314.0",
-    "react-native-dotenv": "^3.4.9",
+    "react-native-dotenv": "^3.4.12",
     "react-native-element-dropdown": "^2.10.1",
     "react-native-gesture-handler": "~2.32.0",
     "react-native-get-random-values": "~1.11.0",
